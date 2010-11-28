@@ -69,6 +69,7 @@ describe StatusMessagesController do
     end
 
     it "dispatches all referenced photos" do
+      User.stub!(:find_by_id).and_return(user)
       fixture_filename  = 'button.png'
       fixture_name      = File.join(File.dirname(__FILE__), '..', 'fixtures', fixture_filename)
 
@@ -81,10 +82,13 @@ describe StatusMessagesController do
       hash = status_message_hash
       hash[:photos] = [photo1.id.to_s, photo2.id.to_s]
 
-      user.should_receive(:dispatch_post).exactly(3).times
+      user.should_receive(:dispatch_post).exactly(3).times 
       post :create, hash
     end
-
+  context 'services' do
+    before do
+      User.stub!(:find_by_id).and_return(user)      
+    end
     context "posting out to facebook" do
       let!(:service2) { s = Factory(:service, :provider => 'facebook'); user.services << s; s }
 
@@ -113,6 +117,7 @@ describe StatusMessagesController do
         user.should_not_receive(:post_to_twitter)
         post :create, status_message_hash
       end
+    end
     end
   end
 

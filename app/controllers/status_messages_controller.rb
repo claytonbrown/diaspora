@@ -26,10 +26,9 @@ class StatusMessagesController < ApplicationController
       raise 'MongoMapper failed to catch a failed save' unless @status_message.id
 
       @status_message.photos += photos unless photos.nil?
-      current_user.dispatch_post(@status_message, :to => params[:status_message][:aspect_ids])
-
+      Resque.enqueue(Jobs::PostDispatch, current_user.id, @status_message.id, params[:status_message][:aspect_ids])
       for photo in photos
-        current_user.dispatch_post(photo, :to => params[:status_message][:aspect_ids])
+        Resque.enqueue(Jobs::PostDispatch, current_user.id, photo.id, params[:status_message][:aspect_ids])
       end
 
       respond_to do |format|

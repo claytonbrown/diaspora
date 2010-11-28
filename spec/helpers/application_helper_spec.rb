@@ -201,6 +201,39 @@ describe ApplicationHelper do
         res.should == "http://url.com www.url.com www.youtube.com/watch?foo=bar&amp;v=BARFOO&amp;whatever=related *emphasis* __emphasis__ <a target=\"_blank\" href=\"www.url.com\">link</a> <a target=\"_blank\" href=\"url.com\" title=\"title\">link</a>"
       end
     end
+    
+    describe '#modern_browser?' do
+      it 'matches chrome' do
+        pending
+        user_agent = "Mozilla/5.0rew (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.210 Safari/534.10"
+        modern_browser?(user_agent).should_not be false
+      end
+
+      it 'only matches Chrome 4.0 and higher' do
+        pending
+        user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/3.0.552.210 Safari/534.10"
+        modern_browser?(user_agent).should be nil
+      end
+
+      it 'recognizes Safari 5.0.2 and higher' do
+        pending
+        user_agent"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4"
+        modern_browser?(user_agent).should_not be nil
+      end
+
+      it 'recognizes Firefox 4 or higher' do
+        pending
+        user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/3.0.552.210 Safari/534.10"
+        modern_browser?(user_agent).should_not be nil
+      end
+
+      it 'recognizes Opera 11 or better' do
+        pending
+        user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/3.0.552.210 Safari/534.10"
+        modern_browser?(user_agent).should_not be nil
+     end
+  
+    end
 
     context 'performance' do
       before do

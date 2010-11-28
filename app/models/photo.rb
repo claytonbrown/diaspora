@@ -40,8 +40,8 @@ class Photo < Post
     photo = super(params)
     image_file = params.delete(:user_file)
     photo.random_string = gen_random_string(10)
-
     photo.image.store! image_file
+    #Resque.enqueue(Background::ImageSaver, photo.id image_file)
     photo
   end
 

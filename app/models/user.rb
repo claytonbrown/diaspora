@@ -9,7 +9,9 @@ class User
   include MongoMapper::Document
   include Diaspora::UserModules
   include Encryptor::Private
+  include AsyncHelper
 
+  @queue = :default
   plugin MongoMapper::Devise
 
   QUEUE = MessageHandler.new
@@ -62,6 +64,7 @@ class User
   end
 
   attr_accessible :getting_started, :password, :password_confirmation, :language,
+
 
   def strip_and_downcase_username
     if username.present?
@@ -209,8 +212,8 @@ class User
     end
 
     aspect_ids.each do |aspect_id|
-      unless self.aspects.find(aspect_id)
-        raise ArgumentError.new("Cannot post to an aspect you do not own.")
+      unless self.aspects.find_by_id(aspect_id)
+        raise ArgumentError.new("Cannot post to an aspect you do not own. #{aspect_id}")
       end
     end
 
