@@ -1,7 +1,5 @@
 thins:
   - port: '3001'
-  - port: '3002'
-  - port: '3003'
-url: 'alpha.joindiaspora.com'
+url: 'pivots.joindiaspora.com'
 cert_location: '/usr/local/nginx/conf/diaspora.crt'
 key_location: '/usr/local/nginx/conf/diaspora.key'

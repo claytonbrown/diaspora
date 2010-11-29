@@ -14,3 +14,7 @@ end
 execute "change redis.conf permissions" do
   command "chmod 755 /usr/local/etc/redis.conf"
 end
+
+execute "make the redis db directory" do
+  command "mkdir -p /usr/local/var/db/redis"
+end
