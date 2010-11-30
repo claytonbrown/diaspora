@@ -47,14 +47,14 @@ end
 
 class User
     def post(class_name, opts = {})
-    post = build_post(class_name, opts)
+    p = build_post(class_name, opts)
 
-    if post.save
-      raise 'MongoMapper failed to catch a failed save' unless post.id
-      add_to_stream(post, opts[:to])
-      dispatch_post(post, :to => opts[:to])
+    if p.save
+      raise 'MongoMapper failed to catch a failed save' unless p.id
+      add_to_stream(p, opts[:to])
+      dispatch_post(p, :to => opts[:to])
     end
-    post
+    p
   end
 end
 

@@ -162,6 +162,7 @@ class User
   def dispatch_post(post, opts = {})
     aspect_ids = opts.delete(:to)
 
+
     #socket post
     Rails.logger.info("event=dispatch user=#{diaspora_handle} post=#{post.id.to_s}")
     send_to_contacts(post, aspect_ids)
@@ -196,9 +197,8 @@ class User
 
   def validate_aspect_permissions(aspect_ids)
     return aspect_ids if aspect_ids == "all"
-    puts aspect_ids.inspect 
-    aspect_ids.map!{|x| x.id.to_id }
-    aspects.collect{ |x| x.id } & aspect_ids
+    a = [*aspect_ids].collect{|x| x }
+    aspects.collect{ |x| x.id } & a
   end
 
   def save_to_aspects(post, aspect_ids)
