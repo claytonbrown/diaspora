@@ -46,11 +46,13 @@ module Resque
 end
 
 class User
-    def post(class_name, opts = {})
-    p = build_post(class_name, opts)
-
-    if p.save
+  def post(class_name, opts = {})
+  p = build_post(class_name, opts)
+    if p.save!
       raise 'MongoMapper failed to catch a failed save' unless p.id
+
+      self.aspects.reload
+
       add_to_stream(p, opts[:to])
       dispatch_post(p, :to => opts[:to])
     end

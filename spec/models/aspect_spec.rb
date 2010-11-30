@@ -117,7 +117,7 @@ describe Aspect do
 
       aspect.reload
       aspect.posts.include?(message).should be true
-      user.visible_posts(:by_members_of => aspect).should_include(message)
+      user.visible_posts(:by_members_of => aspect).should include(message)
     end
 
     it "should retract the post from a users' aspects" do

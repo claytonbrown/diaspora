@@ -31,7 +31,6 @@ describe User do
   describe '#validate_aspect_permissions' do
     it 'returns a list of all valid aspects a user can post to' do
       aspect_ids = Aspect.all.map(&:id)
-      puts aspect_ids.inspect
       user.validate_aspect_permissions(aspect_ids).should =~ [aspect.id, aspect1.id]
     end
   end
@@ -119,15 +118,15 @@ describe User do
       user.reload
     end
 
-    describe '#push_to_aspects' do
+    describe '#send_to_contacts' do
       it 'should push a post to a aspect' do
         user.should_receive(:push_to_person).twice
-        user.push_to_aspects(post, aspect.id)
+        user.send_to_contacts(post, aspect.id)
       end
 
       it 'should push a post to contacts in all aspects' do
         user.should_receive(:push_to_person).exactly(3).times
-        user.push_to_aspects(post, :all)
+        user.send_to_contacts(post, :all)
       end
     end
 

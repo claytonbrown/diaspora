@@ -5,10 +5,10 @@
 require 'spec_helper'
 
 describe User do
-  let(:user) { make_user }
-  let(:aspect) { user.aspects.create(:name => 'heroes') }
-  let(:user2) { make_user }
-  let(:aspect2) { user2.aspects.create(:name => 'stuff') }
+  let!(:user) { make_user }
+  let!(:aspect) { user.aspects.create(:name => 'heroes') }
+  let!(:user2) { make_user }
+  let!(:aspect2) { user2.aspects.create(:name => 'stuff') }
 
   it 'should have a key' do
     user.encryption_key.should_not be nil
@@ -276,9 +276,10 @@ describe User do
 
   describe '#update_post' do
     it 'sends a notification to aspects' do
-      user.should_receive(:push_to_aspects).twice
+      user.should_receive(:send_to_contacts).twice
       photo = user.post(:photo, :user_file => uploaded_photo, :caption => "hello", :to => aspect.id)
 
+      user.reload
       user.update_post(photo, :caption => 'hellp')
     end
   end

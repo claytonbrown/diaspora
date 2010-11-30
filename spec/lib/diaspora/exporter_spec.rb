@@ -11,14 +11,16 @@ describe Diaspora::Exporter do
   let!(:user2) { make_user }
   let!(:user3) { make_user }
 
-  let!(:aspect) { user1.aspects.create(:name => "Old Work")   }
-  let(:aspect1) { user1.aspects.create(:name => "Work")   }
-  let(:aspect2) { user2.aspects.create(:name => "Family") }
-  let(:aspect3) { user3.aspects.create(:name => "Pivots") }
+  let!(:aspect) { user1.aspects.create(:name => "Old Work")}
+  let!(:aspect1) { user1.aspects.create(:name => "Work")   }
+  let!(:aspect2) { user2.aspects.create(:name => "Family") }
+  let!(:aspect3) { user3.aspects.create(:name => "Pivots") }
 
   let!(:status_message1) { user1.post(:status_message, :message => "One", :public => true, :to => aspect1.id) }
   let!(:status_message2) { user1.post(:status_message, :message => "Two", :public => true, :to => aspect1.id) }
   let!(:status_message3) { user2.post(:status_message, :message => "Three", :public => false, :to => aspect2.id) }
+
+  let!(:reload_user) { user1.reload; user1.aspects.reload; aspect1.reload }
 
   let(:exported) { Nokogiri::XML(Diaspora::Exporter.new(Diaspora::Exporters::XML).execute(user1)) }
 

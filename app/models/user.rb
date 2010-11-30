@@ -197,15 +197,16 @@ class User
 
   def validate_aspect_permissions(aspect_ids)
     return aspect_ids if aspect_ids == "all"
-    a = [*aspect_ids].collect{|x| x }
-    aspects.collect{ |x| x.id } & a
+    if aspect_ids.respond_to? :to_id
+      aspect_ids = [aspect_ids]
+    end
+    aspects.collect{ |x| x.id } & aspect_ids
   end
 
   def save_to_aspects(post, aspect_ids)
     clean_aspect_ids = validate_aspect_permissions(aspect_ids)
-    
     target_aspects = Aspect.aspects_from_ids(self, clean_aspect_ids)
-    target_aspects.each do|aspect|
+    target_aspects.each do |aspect|
       aspect.posts << post
       aspect.save
     end
@@ -221,7 +222,6 @@ class User
     end
 
     push_to_hub(post) if post.respond_to?(:public) && post.public
-
     push_to_people(post, self.person_objects(target_contacts))
   end
 
