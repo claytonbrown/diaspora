@@ -1,5 +1,5 @@
 require 'resque'
-module Jobs  
+module Background
   module ImageSaver
     @queue = :default
 

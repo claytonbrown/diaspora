@@ -29,6 +29,16 @@ class Aspect
   def to_s
     name
   end
+
+  def self.aspects_from_ids(user, aspect_ids)
+    if aspect_ids == :all || aspect_ids == "all"
+      return user.aspects
+    elsif aspect_ids.is_a?(Array) && aspect_ids.first.class == Aspect
+      return aspect_ids
+    else
+      return user.aspects.find_all_by_id(aspect_ids)
+    end
+  end
   
   def person_objects
     person_ids = people.map{|x| x.person_id}

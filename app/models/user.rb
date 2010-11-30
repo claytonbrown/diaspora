@@ -143,15 +143,7 @@ class User
   end
 
   ######## Posting ########
-  def post(class_name, opts = {})
-    post = build_post(class_name, opts)
 
-    if post.save
-      raise 'MongoMapper failed to catch a failed save' unless post.id
-      dispatch_post(post, :to => opts[:to])
-    end
-    post
-  end
 
   def build_post(class_name, opts = {})
     opts[:person] = self.person
@@ -161,16 +153,18 @@ class User
     model_class.instantiate(opts)
   end
 
+  def add_to_stream(post, aspect_ids)
+    self.raw_visible_posts << post
+    self.save
+    save_to_aspects(post, aspect_ids)
+  end
+
   def dispatch_post(post, opts = {})
     aspect_ids = opts.delete(:to)
 
-    aspect_ids = validate_aspect_permissions(aspect_ids)
-    self.raw_visible_posts << post
-    self.save
-
     #socket post
     Rails.logger.info("event=dispatch user=#{diaspora_handle} post=#{post.id.to_s}")
-    push_to_aspects(post, aspect_ids)
+    send_to_contacts(post, aspect_ids)
     post.socket_to_uid(id, :aspect_ids => aspect_ids) if post.respond_to?(:socket_to_uid) && !post.pending
 
     if post.public
@@ -196,46 +190,35 @@ class User
     if self.owns? post
       post.update_attributes(post_hash)
       aspects = aspects_with_post(post.id)
-      self.push_to_aspects(post, aspects)
+      self.send_to_contacts(post, aspects)
     end
   end
 
   def validate_aspect_permissions(aspect_ids)
-    if aspect_ids == "all"
-      return aspect_ids
-    end
-
-    aspect_ids = [aspect_ids.to_s] unless aspect_ids.is_a? Array
-
-    if aspect_ids.nil? || aspect_ids.empty?
-      raise ArgumentError.new("You must post to someone.")
-    end
-
-    aspect_ids.each do |aspect_id|
-      unless self.aspects.find_by_id(aspect_id)
-        raise ArgumentError.new("Cannot post to an aspect you do not own. #{aspect_id}")
-      end
-    end
-
-    aspect_ids
+    return aspect_ids if aspect_ids == "all"
+    puts aspect_ids.inspect 
+    aspect_ids.map!{|x| x.id.to_id }
+    aspects.collect{ |x| x.id } & aspect_ids
   end
 
-  def push_to_aspects(post, aspect_ids)
-    if aspect_ids == :all || aspect_ids == "all"
-      aspects = self.aspects
-    elsif aspect_ids.is_a?(Array) && aspect_ids.first.class == Aspect
-      aspects = aspect_ids
-    else
-      aspects = self.aspects.find_all_by_id(aspect_ids)
-    end
-    #send to the aspects
-    target_contacts = []
-
-    aspects.each { |aspect|
+  def save_to_aspects(post, aspect_ids)
+    clean_aspect_ids = validate_aspect_permissions(aspect_ids)
+    
+    target_aspects = Aspect.aspects_from_ids(self, clean_aspect_ids)
+    target_aspects.each do|aspect|
       aspect.posts << post
       aspect.save
+    end
+  end
+
+  
+  def send_to_contacts(post, aspect_ids)
+    target_aspects = Aspect.aspects_from_ids(self, aspect_ids)
+
+    target_contacts = []
+    target_aspects.each do |aspect|
       target_contacts = target_contacts | aspect.contacts
-    }
+    end
 
     push_to_hub(post) if post.respond_to?(:public) && post.public
 
@@ -341,7 +324,7 @@ class User
   ########### Profile ######################
   def update_profile(params)
     if self.person.profile.update_attributes(params)
-      push_to_aspects profile, :all
+      send_to_contacts profile, :all
       true
     else
       false

@@ -24,11 +24,16 @@ class StatusMessagesController < ApplicationController
 
     if @status_message.save(:safe => true)
       raise 'MongoMapper failed to catch a failed save' unless @status_message.id
+      aspect_ids = params[:status_message][:aspect_ids]
 
+
+      current_user.add_to_stream(@status_message, aspect_ids)  
       @status_message.photos += photos unless photos.nil?
-      Resque.enqueue(Jobs::PostDispatch, current_user.id, @status_message.id, params[:status_message][:aspect_ids])
+      Resque.enqueue(Background::PostDispatch, current_user.id, @status_message.id, aspect_ids)
+
       for photo in photos
-        Resque.enqueue(Jobs::PostDispatch, current_user.id, photo.id, params[:status_message][:aspect_ids])
+        current_user.add_to_stream(photo, aspect_ids)
+        Resque.enqueue(Background::PostDispatch, current_user.id, photo.id, aspect_ids)
       end
 
       respond_to do |format|

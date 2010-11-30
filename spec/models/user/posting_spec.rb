@@ -16,23 +16,23 @@ describe User do
   let!(:service1) { s = Factory(:service, :provider => 'twitter'); user.services << s; s }
   let!(:service2) { s = Factory(:service, :provider => 'facebook'); user.services << s; s }
 
+  it 'requires an aspect' do
+
+  end
+
+  it "won't let you post to someone else's aspect" do
+
+  end
+
+  it "lets you post to your own aspects" do
+
+  end
 
   describe '#validate_aspect_permissions' do
-    it 'requires an aspect' do
-      proc {
-        user.validate_aspect_permissions([])
-      }.should raise_error /You must post to someone/
-    end
-
-    it "won't let you post to someone else's aspect" do
-      proc {
-        user.validate_aspect_permissions(aspect2.id)
-      }.should raise_error /Cannot post to an aspect you do not own./
-    end
-
-    it "lets you post to your own aspects" do
-      user.validate_aspect_permissions(aspect.id).should be_true
-      user.validate_aspect_permissions(aspect1.id).should be_true
+    it 'returns a list of all valid aspects a user can post to' do
+      aspect_ids = Aspect.all.map(&:id)
+      puts aspect_ids.inspect
+      user.validate_aspect_permissions(aspect_ids).should =~ [aspect.id, aspect1.id]
     end
   end
 

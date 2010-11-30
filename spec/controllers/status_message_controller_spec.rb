@@ -25,14 +25,16 @@ describe StatusMessagesController do
       @video_id = "ABYnqp-bxvg"
       @url="http://www.youtube.com/watch?v=#{@video_id}&a=GxdCwVVULXdvEBKmx_f5ywvZ0zZHHHDU&list=ML&playnext=1"
     end
+
     it 'renders posts with youtube urls' do
       message = user.build_post :status_message, :message => @url, :to => aspect.id
       message[:youtube_titles]= {@video_id => "title"}
       message.save!
-      user.dispatch_post message, :to => aspect.id
+      user.save_to_stream message, :to => aspect.id
       get :show, :id => message.id
       response.body.should match /Youtube: title/
     end
+
     it 'renders posts with comments with youtube urls' do
       message = user.post :status_message, :message => "Respond to this with a video!", :to => aspect.id
       @comment = user.comment "none", :on => message

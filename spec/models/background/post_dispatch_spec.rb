@@ -5,7 +5,7 @@
 require 'spec_helper'
 
 
-describe Jobs::PostDispatch do 
+describe Background::PostDispatch do 
   describe '.perform' do
     it 'calls dispatch post' do
       user = make_user
@@ -13,7 +13,7 @@ describe Jobs::PostDispatch do
       post = user.post(:status_message, :message => "foobar", :to => aspect.id.to_s) 
       user.should_receive(:dispatch_post)
       User.stub!(:find_by_id).and_return(user)
-      Jobs::PostDispatch.perform(user.id, post.id, [aspect.id.to_s])
+      Background::PostDispatch.perform(user.id, post.id, [aspect.id.to_s])
     end
   end
 end

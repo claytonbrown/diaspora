@@ -1,3 +1,8 @@
 require 'resque/tasks'
-task "resque:setup" => :environment
+namespace :resque do
+  task :setup => :environment do
+    puts ENV["RAILS_ENV"]
+  end
+end
+
 

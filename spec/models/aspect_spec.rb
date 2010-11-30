@@ -108,16 +108,7 @@ describe Aspect do
 
   describe 'posting' do
 
-    it 'should add post to aspect via post method' do
-      aspect = user.aspects.create(:name => 'losers', :contacts => [connected_person])
-
-      status_message = user.post( :status_message, :message => "hey", :to => aspect.id )
-
-      aspect.reload
-      aspect.posts.include?(status_message).should be true
-    end
-
-    it 'should add post to aspect via receive method' do
+    it "inserts the post into your local contacts' streams" do
       aspect  = user.aspects.create(:name => 'losers')
       aspect2 = user2.aspects.create(:name => 'winners')
       connect_users(user, aspect, user2, aspect2)
@@ -126,10 +117,10 @@ describe Aspect do
 
       aspect.reload
       aspect.posts.include?(message).should be true
-      user.visible_posts(:by_members_of => aspect).include?(message).should be true
+      user.visible_posts(:by_members_of => aspect).should_include(message)
     end
 
-    it 'should retract the post from the aspects as well' do
+    it "should retract the post from a users' aspects" do
       aspect  = user.aspects.create(:name => 'losers')
       aspect2 = user2.aspects.create(:name => 'winners')
       connect_users(user, aspect, user2, aspect2)
