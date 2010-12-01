@@ -53,7 +53,7 @@ gem 'jammit'
 gem "cloudfiles", :require => false
 
 #Queue
-gem 'resque'
+gem 'resque', :git => 'git://github.com/maxwell/resque.git'
 gem 'SystemTimer'
 
 group :test, :development do

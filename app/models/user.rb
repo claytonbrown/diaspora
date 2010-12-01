@@ -162,7 +162,6 @@ class User
   def dispatch_post(post, opts = {})
     aspect_ids = opts.delete(:to)
 
-
     #socket post
     Rails.logger.info("event=dispatch user=#{diaspora_handle} post=#{post.id.to_s}")
     send_to_contacts(post, aspect_ids)
@@ -200,6 +199,8 @@ class User
     if aspect_ids.respond_to? :to_id
       aspect_ids = [aspect_ids]
     end
+
+    aspect_ids.map!{ |x| x.to_id }
     aspects.collect{ |x| x.id } & aspect_ids
   end
 
@@ -227,24 +228,32 @@ class User
 
   def push_to_people(post, people)
     salmon = salmon(post)
-    people.each do |person|
+
+    remote_people, local_people = people.partition{|x| x.owner_id.nil?}
+
+    local_people.map!{|x| x.owner_id}
+
+    #push to local people
+    unless local_people.empty?
+      push_to_local_people(post, local_people, self.person.id)
+    end
+
+    #push to remote people
+    remote_people.each do |person|
       push_to_person(salmon, post, person)
     end
   end
 
+  def push_to_local_people(post, local_user_ids, sender_id)
+    Resque.enqueue(Background::ReceiveMultiple, post.to_diaspora_xml, local_user_ids, sender_id)
+  end
+
+  
   def push_to_person(salmon, post, person)
-    person.reload # Sadly, we need this for Ruby 1.9.
-    # person.owner will always return a ProxyObject.
-    # calling nil? performs a necessary evaluation.
-    unless person.owner.nil?
-      Rails.logger.info("event=push_to_person route=local sender=#{self.diaspora_handle} recipient=#{person.diaspora_handle} payload_type=#{post.class}")
-      person.owner.receive(post.to_diaspora_xml, self.person)
-    else
-      xml = salmon.xml_for person
-      Rails.logger.info("event=push_to_person route=remote sender=#{self.diaspora_handle} recipient=#{person.diaspora_handle} payload_type=#{post.class}")
-      QUEUE.add_post_request(person.receive_url, xml)
-      QUEUE.process
-    end
+    xml = salmon.xml_for person
+    Rails.logger.info("event=push_to_person route=remote sender=#{self.diaspora_handle} recipient=#{person.diaspora_handle} payload_type=#{post.class}")
+    QUEUE.add_post_request(person.receive_url, xml)
+    QUEUE.process
   end
 
   def push_to_hub(post)

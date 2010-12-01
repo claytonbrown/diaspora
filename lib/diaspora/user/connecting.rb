@@ -68,7 +68,7 @@ module Diaspora
             self.pending_requests << contact_request
             self.save!
             Rails.logger.info("#{self.name} has received a contact request")
-            Request.send_new_request(self, contact_request.from)
+            Resque.enqueue(Background::NewRequest, self.id, contact_request.from.id)
           end
         else
           Rails.logger.info "#{self.name} is trying to receive a contact request from himself."
@@ -86,7 +86,7 @@ module Diaspora
         pending_requests.delete(sent_request)
         sent_request.destroy
         self.save
-        Request.send_request_accepted(self, received_request.from, destination_aspect)
+        Resque.enqueue(Background::RequestAccepted, self.id, received_request.from.id, destination_aspect.id)
       end
 
       def disconnect(bad_contact)

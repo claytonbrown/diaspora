@@ -100,30 +100,30 @@ describe Diaspora::UserModules::Connecting do
       proc { user.send_contact_request_to(user2.person, aspect1) 
       }.should raise_error(MongoMapper::DocumentNotValid, /already connected/)
     end
-    
+
     it 'should not be able to contact request no-one' do
       proc { user.send_contact_request_to(nil, aspect) 
       }.should raise_error(MongoMapper::DocumentNotValid)
     end
 
     it 'should send an email on acceptance if a contact request' do
-      Request.should_receive(:send_request_accepted)
+      mail = mock()
+      mail.should_receive(:deliver)
+      Notifier.should_receive(:request_accepted).with(user.id, user2.person.id, aspect.id).and_return(mail)
       request = user.send_contact_request_to(user2.person, aspect)
       user.receive_request(request.reverse_for(user2), user2.person)
     end
 
-
     describe 'multiple users accepting/rejecting the same person' do
-
       before do
-        user.pending_requests.empty?.should be true
-        user.contacts.empty?.should be true
-        user2.pending_requests.empty?.should be true
-        user2.contacts.empty?.should be true
+        user.pending_requests.empty?.should be_true
+        user.contacts.empty?.should be_true
+        user2.pending_requests.empty?.should be_true
+        user2.contacts.empty?.should be_true
 
         @request       = Request.instantiate(:to => user.person, :from => person_one)
         @request_two   = Request.instantiate(:to => user2.person, :from => person_one)
-        @request_three =  Request.instantiate(:to => user2.person, :from => user.person)
+        @request_three = Request.instantiate(:to => user2.person, :from => user.person)
 
         @req_xml       = @request.to_diaspora_xml
         @req_two_xml   = @request_two.to_diaspora_xml
@@ -153,7 +153,9 @@ describe Diaspora::UserModules::Connecting do
         end
 
         it 'sends an email to the receiving user' do
-          Request.should_receive(:send_new_request).and_return(true)
+          mail = mock()
+          mail.should_receive(:deliver)
+          Notifier.should_receive(:new_request).with(user.id, person_one.id).and_return(mail)
           user.receive @req_xml, person_one
         end
       end

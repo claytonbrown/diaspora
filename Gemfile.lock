@@ -56,6 +56,16 @@ GIT
       plucky (~> 0.3.6)
 
 GIT
+  remote: git://github.com/maxwell/resque.git
+  revision: d51f633603b7ba8da6c0505178ff78461729998e
+  specs:
+    resque (1.11.0)
+      json (~> 1.4.6)
+      redis-namespace (~> 0.8.0)
+      sinatra (>= 0.9.2)
+      vegas (~> 0.1.2)
+
+GIT
   remote: git://github.com/rsofaer/carrierwave.git
   revision: c3dfbdda2fa227af91fe383bb126f59b991a318f
   branch: master
@@ -300,11 +310,6 @@ GEM
     redis (2.1.1)
     redis-namespace (0.8.0)
       redis (< 3.0.0)
-    resque (1.10.0)
-      json (~> 1.4.6)
-      redis-namespace (~> 0.8.0)
-      sinatra (>= 0.9.2)
-      vegas (~> 0.1.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rspec (2.1.0)
@@ -406,7 +411,7 @@ DEPENDENCIES
   omniauth
   pubsubhubbub
   rails (= 3.0.1)
-  resque
+  resque!
   roxml!
   rspec (>= 2.0.0)
   rspec-instafail

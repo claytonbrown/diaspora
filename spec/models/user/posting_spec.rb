@@ -17,15 +17,15 @@ describe User do
   let!(:service2) { s = Factory(:service, :provider => 'facebook'); user.services << s; s }
 
   it 'requires an aspect' do
-
+    pending 'not implemented'
   end
 
   it "won't let you post to someone else's aspect" do
-
+    pending 'not implemented'
   end
 
   it "lets you post to your own aspects" do
-
+    pending 'not implemented'
   end
 
   describe '#validate_aspect_permissions' do
@@ -116,37 +116,40 @@ describe User do
       connect_users(user, aspect1, user4, aspect4)
       user.add_person_to_aspect(user2.person.id, aspect1.id)
       user.reload
+
+      #remote person
+      person = user2.person
+      person.owner_id = nil
+      person.save
     end
 
     describe '#send_to_contacts' do
       it 'should push a post to a aspect' do
-        user.should_receive(:push_to_person).twice
+        user.should_receive(:push_to_local_people).once
         user.send_to_contacts(post, aspect.id)
       end
 
       it 'should push a post to contacts in all aspects' do
-        user.should_receive(:push_to_person).exactly(3).times
+        user.should_receive(:push_to_person).once
         user.send_to_contacts(post, :all)
       end
     end
 
     describe '#push_to_people' do
       it 'should push to people' do
-        user.should_receive(:push_to_person).twice
+        user.should_receive(:push_to_person).once
         user.push_to_people(post, [user2.person, user3.person])
       end
 
       it 'does not use the queue for local transfer' do
         User::QUEUE.should_receive(:add_post_request).once
-
-        remote_person = user4.person
-        remote_person.owner_id = nil
-        remote_person.save
-        remote_person.reload
-
-        user.push_to_people(post, [user2.person, user3.person, remote_person])
+        user.push_to_people(post, [user2.person, user3.person])
       end
 
+      it 'does enqueue local transfers if all recipients are remote' do
+        user.should_not_receive(:push_to_local_people)
+        user.push_to_people(post, [user2.person])
+      end
     end
 
   end
