@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.1'
 
 gem 'bundler', '>= 1.0.0'
-gem "chef", :require => false
+gem "chef", ">= 16.0.257", :require => false
 
 gem "nokogiri", "1.4.3.1"
 
@@ -19,7 +19,7 @@ gem 'twitter', '0.9.12'
 #Mongo
 gem 'mongo_mapper', :branch => 'rails3', :git => 'git://github.com/jnunemaker/mongomapper.git'
 gem 'bson_ext', '1.1'
-gem 'bson', '1.1'
+gem 'bson', '3.0.4'
 
 #Views
 gem 'haml'
@@ -28,7 +28,7 @@ gem 'will_paginate', '3.0.pre2'
 #Uncatagorized
 gem 'roxml', :git => 'git://github.com/Empact/roxml.git'
 gem 'addressable', :require => 'addressable/uri'
-gem 'json'
+gem 'json', '>= 2.3.0'
 gem 'http_accept_language', :git => 'git://github.com/iain/http_accept_language.git'
 
 #Standards
