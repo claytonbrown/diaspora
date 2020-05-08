@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.1'
+gem 'rails', '4.0.0'
 
 gem 'bundler', '>= 1.0.0'
 gem "chef", :require => false
@@ -53,7 +53,7 @@ gem 'jammit'
 gem "cloudfiles", :require => false
 
 group :test, :development do
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', '>= 1.0'
   gem 'ruby-debug19' if RUBY_VERSION.include? "1.9"
   gem 'ruby-debug' if RUBY_VERSION.include? "1.8"
   gem 'launchy'
