@@ -32,7 +32,7 @@ gem 'json'
 gem 'http_accept_language', :git => 'git://github.com/iain/http_accept_language.git'
 
 #Standards
-gem 'pubsubhubbub'
+gem 'pubsubhubbub', '>= 0.1.1'
 
 #EventMachine
 gem 'em-http-request',:ref => 'bf62d67fc72d6e701be5',  :git => 'git://github.com/igrigorik/em-http-request.git', :require => 'em-http'
