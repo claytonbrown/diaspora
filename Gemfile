@@ -5,7 +5,7 @@ gem 'rails', '5.2.4.3'
 gem 'bundler', '>= 1.0.0'
 gem "chef", ">= 16.0.257", :require => false
 
-gem "nokogiri", "1.10.8"
+gem "nokogiri", "1.11.0"
 
 #Security
 gem 'devise', '4.7.1'
@@ -13,7 +13,7 @@ gem 'devise-mongo_mapper', :git => 'git://github.com/collectiveidea/devise-mongo
 gem 'devise_invitable', '1.3.5'
 
 #Authentication
-gem 'omniauth', '>= 1.3.2'
+gem 'omniauth', '>= 0.2.5'
 gem 'twitter', '4.0.0'
 
 #Mongo
