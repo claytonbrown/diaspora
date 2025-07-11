@@ -1,19 +1,19 @@
 source 'http://rubygems.org'
 
 
-gem 'rails', '5.2.4.3'
+gem 'rails', '7.1.0'
 gem 'bundler', '>= 1.0.0'
 gem "chef", ">= 16.0.257", :require => false
 
 gem "nokogiri", "1.10.8"
 
 #Security
-gem 'devise', '4.7.1'
+gem 'devise', '1.1.4'
 gem 'devise-mongo_mapper', :git => 'git://github.com/collectiveidea/devise-mongo_mapper'
-gem 'devise_invitable', '1.3.5'
+gem 'devise_invitable', '1.0.1'
 
 #Authentication
-gem 'omniauth', '>= 1.3.2'
+gem 'omniauth', '>= 1.0.0'
 gem 'twitter', '4.0.0'
 
 #Mongo
@@ -32,11 +32,11 @@ gem 'json', '>= 2.3.0'
 gem 'http_accept_language', :git => 'git://github.com/iain/http_accept_language.git'
 
 #Standards
-gem 'pubsubhubbub', '>= 0.1.1'
+gem 'pubsubhubbub', '>= 0.2.0'
 
 #EventMachine
 gem 'em-http-request',:ref => 'bf62d67fc72d6e701be5',  :git => 'git://github.com/igrigorik/em-http-request.git', :require => 'em-http'
-gem 'thin', '>= 1.2.7'
+gem 'thin', '>= 1.2.8'
 
 #Websocket
 gem 'em-websocket', :git => 'git://github.com/igrigorik/em-websocket'
@@ -60,7 +60,7 @@ group :test, :development do
 end
 
 group :test do
-  gem 'capybara', '~> 0.3.9'
+  gem 'capybara', '~> 0.4.0'
   gem 'cucumber-rails', '0.3.2'
   gem 'rspec', '>= 2.0.0'
   gem 'rspec-rails', '>= 2.0.0'
