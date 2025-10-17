@@ -1,19 +1,19 @@
 source 'http://rubygems.org'
 
 
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.0.0'
 gem 'bundler', '>= 1.0.0'
 gem "chef", ">= 16.0.257", :require => false
 
 gem "nokogiri", "1.10.8"
 
 #Security
-gem 'devise', '4.7.1'
+gem 'devise', '1.1.4'
 gem 'devise-mongo_mapper', :git => 'git://github.com/collectiveidea/devise-mongo_mapper'
-gem 'devise_invitable', '1.3.5'
+gem 'devise_invitable', '0.3.6'
 
 #Authentication
-gem 'omniauth', '>= 1.3.2'
+gem 'omniauth', '>= 0.3.0'
 gem 'twitter', '4.0.0'
 
 #Mongo
@@ -36,7 +36,7 @@ gem 'pubsubhubbub', '>= 0.1.1'
 
 #EventMachine
 gem 'em-http-request',:ref => 'bf62d67fc72d6e701be5',  :git => 'git://github.com/igrigorik/em-http-request.git', :require => 'em-http'
-gem 'thin', '>= 1.2.7'
+gem 'thin', '>= 1.2.8'
 
 #Websocket
 gem 'em-websocket', :git => 'git://github.com/igrigorik/em-websocket'
@@ -53,14 +53,14 @@ gem 'jammit'
 gem "cloudfiles", :require => false
 
 group :test, :development do
-  gem 'factory_girl_rails', '>= 1.0'
+  gem 'factory_girl_rails', '>= 1.0.1'
   gem 'ruby-debug19' if RUBY_VERSION.include? "1.9"
   gem 'ruby-debug' if RUBY_VERSION.include? "1.8"
   gem 'launchy', '>= 0.3.7'
 end
 
 group :test do
-  gem 'capybara', '~> 0.3.9'
+  gem 'capybara', '~> 0.4.0'
   gem 'cucumber-rails', '0.3.2'
   gem 'rspec', '>= 2.0.0'
   gem 'rspec-rails', '>= 2.0.0'
